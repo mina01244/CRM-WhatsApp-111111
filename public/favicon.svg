@@ -1,0 +1,18 @@
+<svg xmlns="http://www.w3.org/2000/svg" viewBox="0 0 256 256">
+  <defs>
+    <linearGradient id="bg" x1="0%" y1="0%" x2="100%" y2="100%">
+      <stop offset="0%" stop-color="#34D399" />
+      <stop offset="100%" stop-color="#059669" />
+    </linearGradient>
+    <filter id="shadow" x="-10%" y="-10%" width="120%" height="120%">
+      <feDropShadow dx="0" dy="8" stdDeviation="12" flood-color="#047857" flood-opacity="0.4" />
+    </filter>
+  </defs>
+  <rect x="16" y="16" width="224" height="224" rx="56" fill="url(#bg)" filter="url(#shadow)" />
+  
+  <!-- A beautiful stylized chat bubble -->
+  <path d="M128 64C83.817 64 48 95.385 48 134.103C48 156.402 59.851 176.241 78.115 188.751C79.791 189.9 80.686 191.95 80.113 193.931L73.125 218.064C71.745 222.827 76.516 226.791 80.957 224.568L106.634 211.721C108.312 210.88 110.224 210.638 112.062 210.98C117.215 211.939 122.545 212.443 128 212.443C172.183 212.443 208 181.058 208 142.341C208 103.623 172.183 64 128 64Z" fill="white" />
+  
+  <!-- A checkmark inside to represent CRM/Completion -->
+  <path d="M104 138L120 154L160 114" stroke="#059669" stroke-width="16" stroke-linecap="round" stroke-linejoin="round" fill="none" />
+</svg>
