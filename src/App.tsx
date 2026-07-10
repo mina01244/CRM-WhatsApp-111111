@@ -428,6 +428,10 @@ WITH CHECK (auth.uid() = user_id);
         )}
         </>
         )}
+        
+        <div className="mt-12 text-center text-sm text-slate-500 pb-4">
+          Designed by <span className="font-bold text-slate-800">Alking</span>
+        </div>
       </main>
 
       {/* SQL Setup Modal */}
