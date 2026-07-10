@@ -11,3 +11,19 @@ export const supabase = createClient(
   cleanSupabaseUrl || 'https://placeholder.supabase.co',
   supabaseAnonKey || 'placeholder'
 );
+
+export const logActivity = async (actionType: string, details: any = {}) => {
+  if (!hasSupabaseKeys) return;
+  try {
+    const { data: { session } } = await supabase.auth.getSession();
+    if (!session) return;
+    
+    await supabase.from('user_activity_logs').insert({
+      user_id: session.user.id,
+      action_type: actionType,
+      details: details
+    });
+  } catch (error) {
+    console.error('Error logging activity:', error);
+  }
+};

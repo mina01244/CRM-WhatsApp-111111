@@ -13,7 +13,7 @@ import { RawDataViewer } from "./components/RawDataViewer";
 import { Customer, MessageTemplate } from "./types";
 import { Send, Users, Clock, CheckCircle, LogOut, Database, Save, Loader2, Table } from "lucide-react";
 import { motion, AnimatePresence } from "motion/react";
-import { supabase, hasSupabaseKeys } from "./lib/supabase";
+import { supabase, hasSupabaseKeys, logActivity } from "./lib/supabase";
 import { Session } from "@supabase/supabase-js";
 import { cn } from "./lib/utils";
 
@@ -75,6 +75,23 @@ CREATE POLICY "Enable all actions for users based on user_id"
 ON app_state FOR ALL 
 USING (auth.uid() = user_id) 
 WITH CHECK (auth.uid() = user_id);
+
+-- Create logs table
+CREATE TABLE IF NOT EXISTS user_activity_logs (
+  id UUID DEFAULT gen_random_uuid() PRIMARY KEY,
+  user_id UUID REFERENCES auth.users(id),
+  action_type TEXT NOT NULL,
+  details JSONB,
+  created_at TIMESTAMP WITH TIME ZONE DEFAULT timezone('utc'::text, now())
+);
+
+ALTER TABLE user_activity_logs ENABLE ROW LEVEL SECURITY;
+
+DROP POLICY IF EXISTS "Users can insert own logs" ON user_activity_logs;
+DROP POLICY IF EXISTS "Users can view own logs" ON user_activity_logs;
+
+CREATE POLICY "Users can insert own logs" ON user_activity_logs FOR INSERT WITH CHECK (auth.uid() = user_id);
+CREATE POLICY "Users can view own logs" ON user_activity_logs FOR SELECT USING (auth.uid() = user_id);
   `.trim();
 
   useEffect(() => {
@@ -329,6 +346,7 @@ WITH CHECK (auth.uid() = user_id);
               </button>
               <Uploader onDataLoaded={(data) => {
                 setCustomers(prev => [...prev, ...data]); // Append new data instead of replacing
+                logActivity('DATA_UPLOADED', { recordsCount: data.length });
               }} />
             </motion.div>
           )}
@@ -422,6 +440,7 @@ WITH CHECK (auth.uid() = user_id);
               showAdvancedTabs={showAdvancedTabs}
               onUpdateStatus={(id, status) => {
                 setCustomers(prev => prev.map(c => c.id === id ? { ...c, status } : c));
+                logActivity('STATUS_UPDATED', { customerId: id, newStatus: status });
               }}
             />
           </div>

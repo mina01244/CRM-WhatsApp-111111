@@ -3,6 +3,7 @@ import { Customer, MessageTemplate } from "../types";
 import { Send, Phone, User, Search, ExternalLink } from "lucide-react";
 import { motion, AnimatePresence } from "motion/react";
 import { cn } from "../lib/utils";
+import { logActivity } from "../lib/supabase";
 
 export function CustomerList({
   customers,
@@ -75,6 +76,7 @@ export function CustomerList({
     
     const url = `https://wa.me/${cleanPhone}${text ? `?text=${encodeURIComponent(text)}` : ""}`;
     onUpdateStatus(customer.id, "sent");
+    logActivity('MESSAGE_SENT', { customerId: customer.id, phone: cleanPhone });
     
     try {
       window.open(url, "_blank", "noopener,noreferrer");

@@ -3,6 +3,7 @@ import { MessageTemplate } from "../types";
 import { Plus, Trash2, Edit2, MessageSquareText } from "lucide-react";
 import { cn } from "../lib/utils";
 import { motion } from "motion/react";
+import { logActivity } from "../lib/supabase";
 
 export function TemplateManager({
   templates,
@@ -16,19 +17,22 @@ export function TemplateManager({
 
   const handleAddTemplate = () => {
     if (!newTemplate.name.trim() || !newTemplate.content.trim()) return;
+    const newId = Math.random().toString(36).substr(2, 9);
     const added = [
       ...templates,
       {
-        id: Math.random().toString(36).substr(2, 9),
+        id: newId,
         ...newTemplate,
       },
     ];
     setTemplates(added);
     setNewTemplate({ name: "", content: "" });
+    logActivity('TEMPLATE_ADDED', { templateId: newId, templateName: newTemplate.name });
   };
 
   const handleDelete = (id: string) => {
     setTemplates(templates.filter((t) => t.id !== id));
+    logActivity('TEMPLATE_DELETED', { templateId: id });
   };
 
   return (
